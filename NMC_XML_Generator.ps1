@@ -20,6 +20,7 @@ if ($test_name) {
     $reqid = [Microsoft.VisualBasic.Interaction]::InputBox("Enter Request Number", $app_name , "REQ, RITM, SCTASK")
 
     #Prompt to Validate who will be recieving a license
+    Add-Type -AssemblyName PresentationFramework
     [System.Windows.MessageBox]::Show('Would  you like to license ' + $full_name + ' for Dragon Medical One ?', $app_name , 'OKCancel')
 
 
@@ -27,7 +28,7 @@ if ($test_name) {
 <?xml version="1.0" encoding="utf-8"?>
 <Users xmlns="http://nuance.com/NAS/UserImport">
     <User FirstName="$($First_Name)" LastName="$($Last_Name)" LoginId="$($login_id)" Password="">
-        <TokenCredential>"$($name)"</TokenCredential>
+        <TokenCredential>$name</TokenCredential>
         <GroupMembership>Default Site\Dragon Medical Users</GroupMembership>
         <GroupMembership>Default Site\PowerMic Mobile Users</GroupMembership>
     </User>
@@ -48,15 +49,17 @@ if ($test_name) {
     if ($result = 'OK') {
         # Save document
         $filename = $dlg.FileName
-        #$template = Add-Content -path $filename -Value $xml_template
         $expanded = Invoke-Expression "@`"`r`n$xml_template`r`n`"@"
-        # New-Item -Path $filename -ItemType File -Force
         Add-Content -path $filename -Value $expanded
-        [System.Windows.MessageBox]::Show('XML for ' + $full_name + ' has been created. You will now be directed to https://nmc-hc-prod-us.nuancehdp.com/ to finish licensing.', $app_name, 'OK', 'Error')
+            
+        # Prompt when generation of XML is Complete
+        Add-Type -AssemblyName PresentationFramework
+        [System.Windows.MessageBox]::Show('XML for ' + $full_name + ' has been created. You will now be directed to https://nmc-hc-prod-us.nuancehdp.com/ to finish licensing.', $app_name, 'OK', 'Information')
         Start-Sleep -s 2
         Start-Process "https://nmc-hc-prod-us.nuancehdp.com/"
     }
 } 
 else {
+    Add-Type -AssemblyName PresentationFramework
     [System.Windows.MessageBox]::Show($name + ' does not exist, please start again', $app_name, 'OK', 'Error')
 }
