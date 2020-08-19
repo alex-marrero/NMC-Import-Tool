@@ -11,7 +11,7 @@ if ($test_name) {
     # name gathered above
     $first_name = Get-ADUser -Identity $name -Properties GivenName | Select-Object -ExpandProperty GivenName
     $last_name = Get-ADUser -Identity $name -Properties sn | Select-Object -ExpandProperty sn
-    $login_id = $name + "_mednax"
+    $login_id = $name + "_<company_name>"
     $token = $name
     
     #Prompts for Ticket Number 
